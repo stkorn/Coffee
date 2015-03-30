@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView android:layout_width="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_height="fill_parent">
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#FFF"
+            android:paddingBottom="40dp">
+        <RelativeLayout android:layout_width="fill_parent" android:layout_height="250dp">
+            <android.support.v4.view.ViewPager
+                    android:id="@+id/image_pager"
+                    android:layout_width="fill_parent"
+                    android:layout_height="230dp"
+                    android:background="#FFF"/>
+
+            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:id="@+id/addcart"
+                          android:layout_alignParentTop="true"
+                          android:layout_alignParentRight="true"
+                          android:paddingLeft="5dp"
+                          android:gravity="center"
+                          android:background="#AACCCCCC"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="5dp">
+                <ImageView android:layout_width="25dp" android:layout_height="25dp"
+                        android:src="@drawable/addtocart"
+                        android:id="@+id/imgcart"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:id="@+id/carttext"
+                          android:text="Add to Cart"
+                          android:textStyle="bold"
+                          android:gravity="center"
+                          android:textSize="16sp"
+                          android:singleLine="false"
+                          android:textColor="#333"
+                        android:paddingTop="8dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="8dp"
+                        android:paddingLeft="5dp"/>
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
+                          android:layout_alignParentBottom="true"
+                          android:layout_centerHorizontal="true"
+                    android:gravity="center"
+                    android:background="#CCFFFFFF">
+                <TextView android:layout_width="250dp" android:layout_height="wrap_content"
+                          android:id="@+id/name"
+                          android:text="name of product"
+                          android:gravity="center"
+                          android:textSize="18sp"
+                          android:singleLine="false"
+                          android:textColor="#333"
+                          android:paddingBottom="5dp"
+                          android:paddingTop="5dp"/>
+            </LinearLayout>
+        </RelativeLayout>
+
+        <View android:layout_width="fill_parent" android:layout_height="2dp" android:background="#CCC"/>
+        <RelativeLayout android:layout_width="fill_parent" android:layout_height="50dp"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="10dp">
+
+            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:orientation="horizontal"
+                          android:layout_alignParentRight="true"
+                          android:layout_marginRight="20dp"
+                          android:gravity="center">
+
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:text="Size: "
+                          android:textSize="16sp"
+                          android:layout_marginRight="10dp"
+                        />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:id="@+id/size1"
+                          android:text="40"
+                          android:background="@drawable/sizebox"
+                          android:padding="5dp"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:id="@+id/size2"
+                          android:text="41"
+                          android:background="@drawable/sizebox_unselected"
+                          android:padding="5dp"
+                          android:layout_marginLeft="10dp"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:id="@+id/size3"
+                          android:text="42"
+                          android:background="@drawable/sizebox_unselected"
+                          android:padding="5dp"
+                          android:layout_marginLeft="10dp"/>
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:layout_marginLeft="20dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:text="Price "
+                          android:textSize="18sp"
+                          android:textStyle="bold"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:id="@+id/price"
+                          android:text="180"
+                          android:textSize="20sp"
+                          android:textStyle="bold"
+                          android:layout_marginLeft="10dp"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:text="$"
+                          android:textSize="20sp"
+                          android:textStyle="bold"
+                          android:layout_marginLeft="5dp"/>
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:text="Description"
+                  android:textSize="16sp"
+                  android:textStyle="bold"
+                  android:layout_marginLeft="20dp"
+                  android:layout_marginTop="10dp"/>
+
+        <TextView android:layout_width="fill_parent" android:layout_height="wrap_content"
+                  android:id="@+id/des"
+                  android:singleLine="false"
+                  android:paddingLeft="20dp"
+                  android:layout_marginTop="20dp"/>
+    </LinearLayout>
+</ScrollView>

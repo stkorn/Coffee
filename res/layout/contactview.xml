@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+        android:background="#FFF">
+
+    <FrameLayout
+            android:id="@+id/shopmap"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_width="match_parent">
+
+    </FrameLayout>
+
+    <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:paddingTop="30dp"
+            android:paddingBottom="30dp"
+            android:background="#333">
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:text="ClothStock"
+                  android:textSize="18sp"
+                  android:textColor="#FFF"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:text="719 KPN Tower,\nFloor A3, Room A1,\nRama 9 Road Bangkapi, Huaykwang,\nBangkok 10310"
+                  android:textSize="16sp"
+                  android:textColor="#FFF"
+                  android:gravity="center"
+                  android:layout_marginTop="5dp"/>
+        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:orientation="horizontal"
+                      android:layout_marginTop="15dp">
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:text="Tel."
+                      android:textColor="#FFF"
+                      android:textSize="16sp"
+                      android:gravity="center"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:id="@+id/telephone"
+                      android:text="  02.717.0770"
+                      android:textColor="@android:color/holo_blue_bright"
+                      android:textSize="16sp"
+                      android:gravity="center"
+                    />
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:layout_marginTop="5dp"
+                      android:orientation="horizontal">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:text="Email: "
+                      android:textColor="#FFF"
+                      android:textSize="16sp"
+                      android:gravity="center"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:id="@+id/email"
+                      android:text="  engineer@techprox.com"
+                      android:textColor="@android:color/holo_blue_bright"
+                      android:textSize="16sp"
+                      android:gravity="center"
+                    />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

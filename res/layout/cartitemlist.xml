@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:padding="10dp">
+
+    <ImageView android:layout_width="70dp" android:layout_height="70dp"
+               android:id="@+id/cartImage"
+               android:src="@drawable/img25"/>
+
+    <LinearLayout android:layout_width="0dp" android:layout_weight="8"
+                  android:layout_height="wrap_content"
+                  android:orientation="vertical"
+                  android:paddingTop="10dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp">
+
+        <TextView android:layout_width="fill_parent" android:layout_height="wrap_content"
+                  android:id="@+id/productname"
+                  android:text="fdkfjdkfdlsfjldkfldkffjdlfk"
+                  android:textSize="16sp"
+                android:textColor="#000"/>
+
+        <TextView android:layout_width="fill_parent" android:layout_height="wrap_content"
+                  android:id="@+id/productprice"
+                  android:text="$150"
+                  android:layout_marginTop="10dp"
+                android:textColor="#000"/>
+
+
+    </LinearLayout>
+
+    <LinearLayout android:layout_width="0dp" android:layout_weight="2"
+                  android:layout_height="wrap_content"
+                  android:orientation="vertical"
+                  android:paddingTop="10dp">
+
+        <TextView android:layout_width="fill_parent" android:layout_height="wrap_content"
+                  android:id="@+id/amount"
+                  android:text="Qty x2"
+                android:textSize="16sp"
+                android:textColor="#000"/>
+
+        <TextView android:layout_width="fill_parent" android:layout_height="wrap_content"
+                  android:id="@+id/amounttotal"
+                  android:text="Total $300"
+                  android:textSize="16sp"
+                  android:textColor="#000"
+                android:paddingTop="10dp"
+                android:textStyle="bold"/>
+
+
+    </LinearLayout>
+
+</LinearLayout>

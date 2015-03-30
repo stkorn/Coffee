@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <android.support.v4.view.ViewPager
+                android:id="@+id/view_pager"
+                android:layout_width="fill_parent"
+                android:layout_height="160dp"
+                android:background="#FFF"/>
+
+
+        <LinearLayout android:layout_width="fill_parent" android:layout_height="42dp"
+                      android:background="#CCC"
+                      android:gravity="center_vertical">
+            <LinearLayout android:layout_width="fill_parent" android:layout_height="40dp"
+                          android:gravity="center_vertical"
+                          android:paddingLeft="10dp"
+                          android:background="#FFF">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:text="SHIRT COLLECTION"
+                          android:textSize="16sp"
+                          android:textStyle="bold"/>
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <com.techprox.ClothStock.CustomHorizonScroll
+                android:id="@+id/shirt_list"
+                android:layout_width="fill_parent"
+                android:layout_height="200dp"
+                android:background="#FFF"/>
+        <LinearLayout android:layout_width="fill_parent" android:layout_height="42dp"
+                      android:background="#CCC"
+                      android:gravity="center_vertical">
+            <LinearLayout android:layout_width="fill_parent" android:layout_height="40dp"
+                          android:gravity="center_vertical"
+                          android:paddingLeft="10dp"
+                          android:background="#FFF">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:text="FOOTWEAR"
+                          android:textSize="16sp"
+                          android:textStyle="bold"/>
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <com.techprox.ClothStock.CustomHorizonScroll
+                android:id="@+id/foot_list"
+                android:layout_width="fill_parent"
+                android:layout_height="200dp"
+                android:background="#FFF"
+                android:layout_marginBottom="25dp"/>
+
+        <View android:layout_width="fill_parent" android:layout_height="1dp"
+              android:background="#CCC"/>
+        <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="30dp"
+                android:paddingBottom="15dp"
+                android:background="#333">
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="ClothStock"
+                    android:textSize="14sp"
+                    android:textColor="#FFF"
+                    android:textStyle="bold"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:text="719 KPN Tower,\nFloor A3, Room A1,\nRama 9 Road Bangkapi, Huaykwang,\nBangkok 10310"
+                      android:textSize="12sp"
+                      android:textColor="#FFF"
+                      android:gravity="center"
+                    android:layout_marginTop="5dp"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:text="Tel. +662.717.0770"
+                      android:textColor="#FFF"
+                      android:textSize="12sp"
+                      android:gravity="center"
+                      android:layout_marginTop="5dp"/>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+</ScrollView>

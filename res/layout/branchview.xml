@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+        android:padding="20dp"
+        android:background="#333">
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+              android:text="Branch"
+              android:textSize="24sp"
+              android:textColor="#FFF"
+            android:textStyle="bold"/>
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Branch"
+            android:textSize="16sp"
+            android:paddingTop="30dp"
+            android:textStyle="bold"
+            android:textColor="#FFF"/>
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+              android:id="@+id/branchname"
+              android:text="Bangkok"
+              android:textSize="22sp"
+            android:layout_marginTop="5dp"
+            android:textColor="#FFF"/>
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+              android:text="Telephone"
+              android:textSize="16sp"
+            android:layout_marginTop="15dp"
+            android:textStyle="bold"
+            android:textColor="#FFF"/>
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+              android:id="@+id/branchname"
+              android:text="085-0393393"
+              android:textSize="22sp"
+              android:layout_marginTop="5dp"
+              android:textColor="#FFF"/>
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+              android:text="Address"
+              android:textSize="16sp"
+              android:layout_marginTop="15dp"
+            android:textStyle="bold"
+            android:textColor="#FFF"/>
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+              android:id="@+id/branchname"
+              android:text="45 soi 19, rama 9"
+              android:textSize="22sp"
+              android:layout_marginTop="5dp"
+              android:textColor="#FFF"/>
+
+    <Button android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:id="@+id/getdirect"
+            android:text="Get Direction"
+            android:textColor="#FFF"
+            android:paddingLeft="40dp"
+            android:paddingRight="40dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            android:textStyle="bold"/>
+
+</LinearLayout>
