@@ -18,10 +18,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.techprox.ClothStock.model.ProductItem;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +52,15 @@ public class ProductFullActivity extends Activity {
     private String imageCart;
     private String size;
     private String cata;
+    private int type; // 1:COLD  2:HOT  3:FRAPPE
+
+    private TextView coldType;
+    private TextView hotType;
+    private TextView frappeType;
+
+    final int wipPrice = 15;
+    final int caramelPrice = 5;
+    final int syrupPrice = 5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,16 +71,104 @@ public class ProductFullActivity extends Activity {
         actionBar.setDisplayShowHomeEnabled(true);
         actionBar.setDisplayShowTitleEnabled(false);
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setIcon(R.drawable.deadstock_icon2);
+        actionBar.setIcon(R.drawable.icon);
 
 
         TextView nameTv = (TextView) findViewById(R.id.name);
-        TextView priceTv = (TextView) findViewById(R.id.price);
-        TextView descript = (TextView) findViewById(R.id.des);
+        final TextView priceTv = (TextView) findViewById(R.id.price);
+        final CheckBox wipChk = (CheckBox) findViewById(R.id.wip);
+        final CheckBox caramelChk = (CheckBox) findViewById(R.id.caramel);
+        final CheckBox syrupChk = (CheckBox) findViewById(R.id.syrup);
+
+        coldType = (TextView) findViewById(R.id.cold);
+        hotType = (TextView) findViewById(R.id.hot);
+        frappeType = (TextView) findViewById(R.id.frappe);
+
         final ImageView cartpic = (ImageView) findViewById(R.id.imgcart);
         final TextView addCartTv = (TextView) findViewById(R.id.carttext);
 
         LinearLayout addCartBtn = (LinearLayout) findViewById(R.id.addcart);
+        LinearLayout back = (LinearLayout) findViewById(R.id.backtomenu);
+        LinearLayout checkout = (LinearLayout) findViewById(R.id.checkout);
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+        checkout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), ShoppingCartActivity.class);
+                startActivity(i);
+            }
+        });
+
+        coldType.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setColdType(true);
+
+            }
+        });
+
+        hotType.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setHotType(true);
+            }
+        });
+
+        frappeType.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setFrappeType(true);
+            }
+        });
+
+        wipChk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int price = Integer.parseInt(priceTv.getText().toString());
+                if (wipChk.isChecked()) {
+                    price += wipPrice;
+                    priceTv.setText(price);
+                } else {
+                    price -= wipPrice;
+                    priceTv.setText(price);
+                }
+            }
+        });
+
+        caramelChk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int price = Integer.parseInt(priceTv.getText().toString());
+                if (caramelChk.isChecked()) {
+                    price += caramelPrice;
+                    priceTv.setText(price);
+                } else {
+                    price -= caramelPrice;
+                    priceTv.setText(price);
+                }
+            }
+        });
+
+        syrupChk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int price = Integer.parseInt(priceTv.getText().toString());
+                if (syrupChk.isChecked()) {
+                    price += syrupPrice;
+                    priceTv.setText(price);
+                } else {
+                    price -= syrupPrice;
+                    priceTv.setText(price);
+                }
+            }
+        });
 
 
         Intent pro = getIntent();
@@ -83,18 +182,18 @@ public class ProductFullActivity extends Activity {
             public void onClick(View v) {
 
 
-                    ShoppingItem.addCart(proid);
+                ShoppingItem.addCart(proid);
 
 
                 AlertDialog.Builder alertB = new AlertDialog.Builder(ProductFullActivity.this);
                 alertB
-                        .setMessage("Added to Cart")
-                .setNegativeButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
+                        .setMessage("Add to order already.")
+                        .setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
 
 
                 AlertDialog alert = alertB.create();
@@ -106,71 +205,11 @@ public class ProductFullActivity extends Activity {
         nameTv.setText(namePro);
         priceTv.setText(price + "");
 
-        sizeBox[0] = (TextView) findViewById(R.id.size1);
-        sizeBox[1] = (TextView) findViewById(R.id.size2);
-        sizeBox[2] = (TextView) findViewById(R.id.size3);
 
-        if (cata.matches("shirt")) {
-            sizeBox[0].setText("S");
-            sizeBox[1].setText("M");
-            sizeBox[2].setText("L");
 
-            descript.setText("The Half Dome Tee by The North Face features:\n" +
-                    "\n" +
-                    "-US sizing\n" +
-                    "-Ribbed knit crew neck\n" +
-                    "-Screen printed logo graphic on front\n" +
-                    "-Casual fit");
-        } else {
-            descript.setText("The Air Force 1 features a faux pony hair throughout the patterned heel and midfoot. " +
-                    "which is then contrasted by grey leather toe. Black appears on the tongue, heel-tab, " +
-                    "Swoosh and midsole, and a gummy jade outsole.");
-        }
 
-        sizeBox[0].setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boxNum = 0;
-                changeSize();
 
-                if (cata.matches("shirt")) {
-                    size = "S";
-                } else {
-                    size = "40";
-                }
 
-            }
-        });
-
-        sizeBox[1].setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boxNum = 1;
-                changeSize();
-
-                if (cata.matches("shirt")) {
-                    size = "M";
-                } else {
-                    size = "41";
-                }
-
-            }
-        });
-
-        sizeBox[2].setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boxNum = 2;
-                changeSize();
-
-                if (cata.matches("shirt")) {
-                    size = "L";
-                } else {
-                    size = "42";
-                }
-
-            }
-        });
 
 
         ExternalDbOpenHelper dbOpenHelper = new ExternalDbOpenHelper(this, DB_NAME);
@@ -197,6 +236,51 @@ public class ProductFullActivity extends Activity {
         ViewPager viewPager = (ViewPager) findViewById(R.id.image_pager);
         ImagePagerAdapter mAdapter = new ImagePagerAdapter();
         viewPager.setAdapter(mAdapter);
+
+    }
+
+    private void setColdType(boolean t) {
+        if (t) {
+            coldType.setTextColor(Color.WHITE);
+            coldType.setBackgroundColor(Color.BLACK);
+            type = 1;
+            setHotType(false);
+            setFrappeType(false);
+        } else {
+            coldType.setTextColor(Color.BLACK);
+            coldType.setBackgroundColor(Color.WHITE);
+        }
+
+
+    }
+
+    private void setHotType(boolean t) {
+        if (t) {
+            hotType.setTextColor(Color.WHITE);
+            hotType.setBackgroundColor(Color.BLACK);
+            type = 2;
+            setColdType(false);
+            setFrappeType(false);
+        } else {
+            hotType.setTextColor(Color.BLACK);
+            hotType.setBackgroundColor(Color.WHITE);
+        }
+
+
+    }
+
+    private void setFrappeType(boolean t) {
+        if (t) {
+            frappeType.setTextColor(Color.WHITE);
+            frappeType.setBackgroundColor(Color.BLACK);
+            type = 3;
+            setColdType(false);
+            setHotType(false);
+        } else {
+            frappeType.setTextColor(Color.BLACK);
+            frappeType.setBackgroundColor(Color.WHITE);
+        }
+
 
     }
 
@@ -273,8 +357,8 @@ public class ProductFullActivity extends Activity {
             case android.R.id.home:
                 onBackPressed();
                 return true;
-            case R.id.action_settings:
-                return true;
+//            case R.id.action_settings:
+//                return true;
             case R.id.cart:
                 Intent i = new Intent(ProductFullActivity.this, ShoppingCartActivity.class);
                 startActivity(i);
