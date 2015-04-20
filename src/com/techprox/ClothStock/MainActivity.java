@@ -20,6 +20,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
+import com.parse.Parse;
+import com.parse.ParseObject;
 import com.techprox.ClothStock.adapter.NavDrawerListAdapter;
 import com.techprox.ClothStock.fragment.ProductFragment;
 import com.techprox.ClothStock.model.NavDrawerItem;
@@ -64,8 +66,7 @@ public class MainActivity extends Activity {
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayShowHomeEnabled(true);
         actionBar.setDisplayShowTitleEnabled(false);
-        actionBar.setIcon(R.drawable.deadstock_icon2);
-
+        actionBar.setIcon(R.drawable.icon);
 
 
         //Sliding bar
@@ -91,7 +92,7 @@ public class MainActivity extends Activity {
         // Product
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
         // Ab0ut
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
+//        navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
 //        navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1), true, "22"));  //Enable counter text
 
         // Recycle the typed array
@@ -156,13 +157,13 @@ public class MainActivity extends Activity {
             case 0: // Home
                 fragment = new ProductFragment();
                 break;
-            case 1: //Category
-                fragment = new CatagoryFragment();
-                break;
-            case 2: //Map
+//            case 1: //Category
+//                fragment = new CatagoryFragment();
+//                break;
+            case 1: //Map
                 fragment = new MapFragment();
                 break;
-            case 3: //Contact
+            case 2: //Contact
                 fragment = new ContactFragment();
                 break;
 
@@ -202,8 +203,8 @@ public class MainActivity extends Activity {
         }
         // Handle action bar actions click
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                return true;
+//            case R.id.action_settings:
+//                return true;
             case R.id.cart:
                 Intent i = new Intent(MainActivity.this, ShoppingCartActivity.class);
                 startActivity(i);
@@ -220,7 +221,7 @@ public class MainActivity extends Activity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         // if nav drawer is opened, hide the action items
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-        menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
+//        menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
         return super.onPrepareOptionsMenu(menu);
     }
 

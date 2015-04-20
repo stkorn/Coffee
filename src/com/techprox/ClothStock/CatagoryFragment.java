@@ -1,17 +1,12 @@
 package com.techprox.ClothStock;
 
-import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,10 +19,10 @@ public class CatagoryFragment extends Fragment {
     CollectionPagerAdapter mCollectionPagerAdapter;
     ViewPager mViewPager;
 
-    ShirtFragment shFragment;
-    FootFragment ftFragment;
+    CoffeeFragment shFragment;
+    TeaFragment ftFragment;
 
-    private static final String[] titles = { "SHIRT", "FOOTWEAR"};
+    private static final String[] titles = { "COLD", "HOT"};
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,6 +52,8 @@ public class CatagoryFragment extends Fragment {
         PagerTabStrip pagerTabStrip = (PagerTabStrip) view.findViewById(R.id.pager_title_strip);
         pagerTabStrip.setDrawFullUnderline(false);
         pagerTabStrip.setTabIndicatorColor(Color.BLACK);
+
+
 
 //        PagerTabStrip strip = PagerTabStrip.class.cast(view.findViewById(R.id.pager_title_strip));
 //        strip.setDrawFullUnderline(false);
@@ -125,13 +122,13 @@ public class CatagoryFragment extends Fragment {
         public Fragment getItem(int i) {
             switch (i) {
                 case 0:
-                    shFragment = new ShirtFragment();
+                    shFragment = new CoffeeFragment();
                     return shFragment;
                 case 1:
-                    ftFragment = new FootFragment();
+                    ftFragment = new TeaFragment();
                     return ftFragment;
 
-                default: shFragment = new ShirtFragment();
+                default: shFragment = new CoffeeFragment();
                     return shFragment;
             }
 

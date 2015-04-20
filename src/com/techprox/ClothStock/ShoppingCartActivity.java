@@ -3,6 +3,7 @@ package com.techprox.ClothStock;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
@@ -11,17 +12,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.*;
 import com.techprox.ClothStock.adapter.CartAdapter;
 import com.techprox.ClothStock.model.CartItem;
 import com.techprox.ClothStock.model.ProductItem;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by stkornsmc on 2/13/14 AD.
@@ -32,6 +28,9 @@ public class ShoppingCartActivity extends Activity{
     ListView cartListView;
     ArrayList<Integer> item;
     HashMap<Integer, Integer> amountItem;
+
+    TextView pickupTime;
+    Button selectTime;
 
     private SQLiteDatabase database;
     private static final String DB_NAME = "clothstock2";
@@ -46,6 +45,7 @@ public class ShoppingCartActivity extends Activity{
     private static final String IMAGE_NAME = "imgname";
 
     int totalprice = 0;
+    int[] deliveryTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,20 +53,51 @@ public class ShoppingCartActivity extends Activity{
         setContentView(R.layout.shoppingcartview);
         mContext = getApplicationContext();
 
-
-
+        Calendar mcurrentTime = Calendar.getInstance();
+        int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+        int minute = mcurrentTime.get(Calendar.MINUTE);
+        deliveryTime = getDeliveryTime(hour, minute);
 
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayShowHomeEnabled(true);
         actionBar.setDisplayShowTitleEnabled(false);
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setIcon(R.drawable.deadstock_icon2);
+        actionBar.setIcon(R.drawable.icon);
 
         final CartAdapter adapter = new CartAdapter(mContext);
 
         cartListView = (ListView) findViewById(R.id.list);
         TextView total = (TextView) findViewById(R.id.totalprice);
+        selectTime = (Button) findViewById(R.id.selecttime);
+        pickupTime = (TextView) findViewById(R.id.pickuptime);
 
+        pickupTime.setText(deliveryTime[0] + ":" + deliveryTime[1]);
+
+        selectTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar mcurrentTime = Calendar.getInstance();
+                TimePickerDialog mTimePicker;
+                final int hourD = deliveryTime[0];
+                final int minuteD = deliveryTime[1];
+                mTimePicker = new TimePickerDialog(ShoppingCartActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                        if (selectedHour > hourD) {
+                            pickupTime.setText(selectedHour + ":" + selectedMinute);
+                        } else if (selectedHour == hourD && selectedMinute >= minuteD) {
+                            pickupTime.setText(selectedHour + ":" + selectedMinute);
+                        }
+                        else {
+                            Toast.makeText(mContext, "Your pick up time can't delivery", 200).show();
+                            pickupTime.setText(hourD + ":" + minuteD);
+                        }
+                    }
+                }, hourD, minuteD, true);//Yes 24 hour time
+                mTimePicker.setTitle("Select Pick up Time");
+                mTimePicker.show();
+            }
+        });
 
 
         //Copy database to package
@@ -166,6 +197,20 @@ public class ShoppingCartActivity extends Activity{
             }
         });
 
+    }
+
+    private int[] getDeliveryTime(int hour, int minute) {
+        int[] time = new int[2];
+//        int minutePlus = ((minute + 15) / 5) * 5 ;
+        int minutePlus = minute + 15;
+
+        if (minutePlus > 60) {
+            minutePlus -= 60;
+            hour += 1;
+        }
+        time[0] = hour;
+        time[1] = minutePlus;
+        return time;
     }
 
     @Override

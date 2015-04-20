@@ -1,14 +1,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:AfterSix="http://schemas.android.com/apk/res-auto">
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="@string/action_settings"/>
+    <!--<item-->
+        <!--android:id="@+id/action_settings"-->
+        <!--android:orderInCategory="100"-->
+        <!--android:showAsAction="never"-->
+        <!--android:title="@string/action_settings"/>-->
 
     <item android:id="@+id/cart"
           android:icon="@drawable/shoppingcart"
-          android:title="Add"
+          android:title="Order"
           android:showAsAction="ifRoom"/>
 
 

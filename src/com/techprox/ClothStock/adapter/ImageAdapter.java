@@ -1,11 +1,15 @@
 package com.techprox.ClothStock.adapter;
 
+import android.app.ActionBar;
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import com.techprox.ClothStock.R;
 
 /**
@@ -15,9 +19,9 @@ public class ImageAdapter extends PagerAdapter {
 
     Context context;
     private int[] GalImages = new int[] {
-            R.drawable.banner1,
-            R.drawable.banner2,
-            R.drawable.banner3
+            R.drawable.cup1,
+            R.drawable.cup1,
+            R.drawable.cup1
     };
     public ImageAdapter(Context context){
         this.context=context;
@@ -34,11 +38,14 @@ public class ImageAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
+        TextView name = new TextView(context);
+
         ImageView imageView = new ImageView(context);
-        int padding = 0;
+        int padding = 10;
         imageView.setPadding(padding, padding, padding, padding);
-        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         imageView.setImageResource(GalImages[position]);
+
         ((ViewPager) container).addView(imageView, 0);
         return imageView;
     }

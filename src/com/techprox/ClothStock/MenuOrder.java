@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
+import com.techprox.ClothStock.model.OtherFragment;
 
 /**
  * Created by stkornsmc on 2/11/14 AD.
@@ -19,8 +20,9 @@ public class MenuOrder extends Activity {
 
     CoffeeFragment coffeeFragment;
     TeaFragment teaFragment;
+    OtherFragment otherFragment;
 
-    private static final String[] titles = { "COFFEE", "TEA", "OTHERS"};
+    private static final String[] titles = { "COLD", "HOT", "FRAPPE"};
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,6 +65,9 @@ public class MenuOrder extends Activity {
                 case 1:
                     teaFragment = new TeaFragment();
                     return teaFragment;
+                case 2:
+                    otherFragment = new OtherFragment();
+                    return otherFragment;
 
                 default: coffeeFragment = new CoffeeFragment();
                     return coffeeFragment;
@@ -72,7 +77,7 @@ public class MenuOrder extends Activity {
 
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
 
         @Override

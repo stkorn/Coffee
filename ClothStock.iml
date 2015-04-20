@@ -15,10 +15,11 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="volley" />
     <orderEntry type="library" name="google-play-services" level="project" />
     <orderEntry type="module" module-name="google-play-services_lib" />
     <orderEntry type="library" name="android-support-v13" level="project" />
     <orderEntry type="library" name="devsmartlib" level="project" />
+    <orderEntry type="library" name="bolts-android-1.2.0" level="project" />
   </component>
 </module>
-

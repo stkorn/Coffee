@@ -54,6 +54,8 @@ public class ProductFullActivity extends Activity {
     private String cata;
     private int type; // 1:COLD  2:HOT  3:FRAPPE
 
+    private TextView priceTv;
+
     private TextView coldType;
     private TextView hotType;
     private TextView frappeType;
@@ -75,7 +77,7 @@ public class ProductFullActivity extends Activity {
 
 
         TextView nameTv = (TextView) findViewById(R.id.name);
-        final TextView priceTv = (TextView) findViewById(R.id.price);
+        priceTv = (TextView) findViewById(R.id.price);
         final CheckBox wipChk = (CheckBox) findViewById(R.id.wip);
         final CheckBox caramelChk = (CheckBox) findViewById(R.id.caramel);
         final CheckBox syrupChk = (CheckBox) findViewById(R.id.syrup);
@@ -134,10 +136,11 @@ public class ProductFullActivity extends Activity {
                 int price = Integer.parseInt(priceTv.getText().toString());
                 if (wipChk.isChecked()) {
                     price += wipPrice;
-                    priceTv.setText(price);
+                    setPrice(price);
+
                 } else {
                     price -= wipPrice;
-                    priceTv.setText(price);
+                    setPrice(price);
                 }
             }
         });
@@ -148,10 +151,10 @@ public class ProductFullActivity extends Activity {
                 int price = Integer.parseInt(priceTv.getText().toString());
                 if (caramelChk.isChecked()) {
                     price += caramelPrice;
-                    priceTv.setText(price);
+                    setPrice(price);
                 } else {
                     price -= caramelPrice;
-                    priceTv.setText(price);
+                    setPrice(price);
                 }
             }
         });
@@ -162,10 +165,10 @@ public class ProductFullActivity extends Activity {
                 int price = Integer.parseInt(priceTv.getText().toString());
                 if (syrupChk.isChecked()) {
                     price += syrupPrice;
-                    priceTv.setText(price);
+                    setPrice(price);
                 } else {
                     price -= syrupPrice;
-                    priceTv.setText(price);
+                    setPrice(price);
                 }
             }
         });
@@ -237,6 +240,10 @@ public class ProductFullActivity extends Activity {
         ImagePagerAdapter mAdapter = new ImagePagerAdapter();
         viewPager.setAdapter(mAdapter);
 
+    }
+
+    private void setPrice(int pr) {
+        priceTv.setText(String.valueOf(pr));
     }
 
     private void setColdType(boolean t) {

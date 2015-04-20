@@ -26,7 +26,7 @@ public class BranchActivity extends Activity {
         actionBar.setDisplayShowHomeEnabled(true);
         actionBar.setDisplayShowTitleEnabled(false);
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setIcon(R.drawable.deadstock_icon2);
+        actionBar.setIcon(R.drawable.icon);
 
         String name = getIntent().getStringExtra("name");
 

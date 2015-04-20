@@ -1,9 +1,6 @@
 package com.techprox.ClothStock;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -18,21 +15,20 @@ import android.widget.GridView;
 import com.techprox.ClothStock.adapter.ProductAdapter;
 import com.techprox.ClothStock.model.ProductItem;
 
-import java.sql.SQLDataException;
-import java.sql.SQLException;
-
 /**
  * Created by stkornsmc on 2/11/14 AD.
  */
-public class ShirtFragment extends Fragment {
+public class TeaFragment extends Fragment {
 
     private Context mContext;
 
-    private static String cata = "shirt";
+    private static String cata = "footwear";
 
+    private int viewShow = 0; // 0 = gridview , 1 = listview
+    private GridView gridView;
+    private ProductAdapter footAdapter;
 
-    private  SQLiteDatabase database;
-    private ExternalDbOpenHelper dbOpenHelper;
+    private SQLiteDatabase database;
 
     private static final String DB_NAME = "clothstock2";
     private static final String PRODUCT_TABLE = "product";
@@ -45,17 +41,13 @@ public class ShirtFragment extends Fragment {
     private static final String IMAGE_ID = "imgid";
     private static final String IMAGE_NAME = "imgname";
 
-
-    private int viewShow = 0; // 0 = gridview , 1 = listview
-    private GridView gridView;
-    private ProductAdapter shirtAdapter;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = getActivity();
-        dbOpenHelper = new ExternalDbOpenHelper(getActivity(), DB_NAME);
+        ExternalDbOpenHelper dbOpenHelper = new ExternalDbOpenHelper(getActivity(), DB_NAME);
         database = dbOpenHelper.openDataBase();
+
 
     }
 
@@ -72,53 +64,44 @@ public class ShirtFragment extends Fragment {
 
         gridView = (GridView) view.findViewById(R.id.gridView);
 
-        shirtAdapter = new ProductAdapter(mContext);
+        footAdapter = new ProductAdapter(mContext);
 
-
-        database.beginTransaction();
-
-        try {
-
-
-        //Get shirth product
-        Cursor stuCursor = database.query(PRODUCT_TABLE, new String[] {PRODUCT_ID,
+        //Get footwear product
+        Cursor ftCursor = database.query(PRODUCT_TABLE, new String[] {PRODUCT_ID,
                 PRODUCT_NAME, PRODUCT_PRICE, CATAGORY}, CATAGORY + "=" + "\"" + cata + "\"", null, null, null, PRODUCT_ID);
 
-        stuCursor.moveToFirst();
-        if(!stuCursor.isAfterLast()) {
+        ftCursor.moveToFirst();
+        if(!ftCursor.isAfterLast()) {
             do {
 
                 //Get content
-                int proID = stuCursor.getInt(0);
-                String name = stuCursor.getString(1);
-                int price = stuCursor.getInt(2);
-                String cata = stuCursor.getString(3);
+                int proID = ftCursor.getInt(0);
+                String name = ftCursor.getString(1);
+                int price = ftCursor.getInt(2);
+                String cata = ftCursor.getString(3);
 
                 //Get image
                 Cursor imgCursor = database.query(IMAGE_TABLE, new String[] {IMAGE_ID, IMAGE_NAME, PRODUCT_ID}
-                        , PRODUCT_ID + "=" + proID, null, null, null, IMAGE_ID);
+                        , PRODUCT_ID + "=" + "\"" + proID + "\"", null, null, null, IMAGE_ID);
 
                 imgCursor.moveToFirst();
                 String imgName = imgCursor.getString(1);
 
-                shirtAdapter.add(new ProductItem(imgName, name, price, proID, cata));
+                footAdapter.add(new ProductItem(imgName, name, price, proID, cata));
 
                 imgCursor.close();
 
-            } while (stuCursor.moveToNext());
+            } while (ftCursor.moveToNext());
         }
-        stuCursor.close();
+        ftCursor.close();
 
-        database.setTransactionSuccessful();
-
-        gridView.setAdapter(shirtAdapter);
-
+        gridView.setAdapter(footAdapter);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent i = new Intent(getActivity(), ProductFullActivity.class);
-                ProductItem item = shirtAdapter.getItem(position);
+                ProductItem item = footAdapter.getItem(position);
                 String namePro = item.nameProduct;
                 String cata = item.cata;
                 int price = item.price;
@@ -131,21 +114,13 @@ public class ShirtFragment extends Fragment {
             }
         });
 
-
-
-        } catch (Exception e) {
-            database.endTransaction();
-            e.printStackTrace();
-        }
-
-        database.endTransaction();
-
         return view;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Log.i("app", "onResume from shirt");
+        Log.i("app", "onResume from footwear");
+
     }
 }
