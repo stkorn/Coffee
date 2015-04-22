@@ -18,14 +18,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.*;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.techprox.ClothStock.model.ProductItem;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -64,6 +69,22 @@ public class ProductFullActivity extends Activity {
     final int caramelPrice = 5;
     final int syrupPrice = 5;
 
+    int priceCold;
+    int priceHot;
+    int priceFrappe;
+
+    CheckBox wipChk = null;
+    CheckBox caramelChk = null;
+    CheckBox syrupChk = null;
+
+    private Button addQuan;
+    private Button minusQuan;
+    private TextView showQuan;
+
+    private int quantity = 1;
+
+    private int admix = 0; //2 = wipcream 3 = caramel 4 = syrup
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,9 +99,9 @@ public class ProductFullActivity extends Activity {
 
         TextView nameTv = (TextView) findViewById(R.id.name);
         priceTv = (TextView) findViewById(R.id.price);
-        final CheckBox wipChk = (CheckBox) findViewById(R.id.wip);
-        final CheckBox caramelChk = (CheckBox) findViewById(R.id.caramel);
-        final CheckBox syrupChk = (CheckBox) findViewById(R.id.syrup);
+        wipChk = (CheckBox) findViewById(R.id.wip);
+        caramelChk = (CheckBox) findViewById(R.id.caramel);
+        syrupChk = (CheckBox) findViewById(R.id.syrup);
 
         coldType = (TextView) findViewById(R.id.cold);
         hotType = (TextView) findViewById(R.id.hot);
@@ -92,6 +113,40 @@ public class ProductFullActivity extends Activity {
         LinearLayout addCartBtn = (LinearLayout) findViewById(R.id.addcart);
         LinearLayout back = (LinearLayout) findViewById(R.id.backtomenu);
         LinearLayout checkout = (LinearLayout) findViewById(R.id.checkout);
+
+        addQuan = (Button) findViewById(R.id.addQ);
+        minusQuan = (Button) findViewById(R.id.minusQ);
+        showQuan = (TextView) findViewById(R.id.quan);
+
+        showQuan.setText(String.valueOf(quantity));
+
+        priceCold = 0;
+        priceHot = 0;
+        priceFrappe = 0;
+
+
+        addQuan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                quantity += 1;
+                showQuan.setText(String.valueOf(quantity));
+                updatePrice();
+
+            }
+        });
+
+        minusQuan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (quantity-1 != 0) {
+                    quantity -= 1;
+                    showQuan.setText(String.valueOf(quantity));
+                    updatePrice();
+
+                }
+            }
+        });
+
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,6 +167,7 @@ public class ProductFullActivity extends Activity {
             @Override
             public void onClick(View v) {
                 setColdType(true);
+                updatePrice();
 
             }
         });
@@ -120,6 +176,8 @@ public class ProductFullActivity extends Activity {
             @Override
             public void onClick(View v) {
                 setHotType(true);
+                updatePrice();
+
             }
         });
 
@@ -127,6 +185,8 @@ public class ProductFullActivity extends Activity {
             @Override
             public void onClick(View v) {
                 setFrappeType(true);
+                updatePrice();
+
             }
         });
 
@@ -136,11 +196,17 @@ public class ProductFullActivity extends Activity {
                 int price = Integer.parseInt(priceTv.getText().toString());
                 if (wipChk.isChecked()) {
                     price += wipPrice;
-                    setPrice(price);
+                    admix = 2;
+                    caramelChk.setChecked(false);
+                    syrupChk.setChecked(false);
+                    updatePrice();
+
 
                 } else {
                     price -= wipPrice;
-                    setPrice(price);
+                    admix = 0;
+                    updatePrice();
+
                 }
             }
         });
@@ -151,10 +217,16 @@ public class ProductFullActivity extends Activity {
                 int price = Integer.parseInt(priceTv.getText().toString());
                 if (caramelChk.isChecked()) {
                     price += caramelPrice;
-                    setPrice(price);
+                    admix = 3;
+                    wipChk.setChecked(false);
+                    syrupChk.setChecked(false);
+                    updatePrice();
+
                 } else {
                     price -= caramelPrice;
-                    setPrice(price);
+                    admix = 0;
+                    updatePrice();
+
                 }
             }
         });
@@ -165,27 +237,135 @@ public class ProductFullActivity extends Activity {
                 int price = Integer.parseInt(priceTv.getText().toString());
                 if (syrupChk.isChecked()) {
                     price += syrupPrice;
-                    setPrice(price);
+                    admix = 4;
+                    wipChk.setChecked(false);
+                    caramelChk.setChecked(false);
+                    updatePrice();
+
                 } else {
                     price -= syrupPrice;
-                    setPrice(price);
+                    admix = 0;
+                    updatePrice();
+
                 }
             }
         });
 
 
         Intent pro = getIntent();
-        final String namePro = pro.getStringExtra("name");
+        String nm =  pro.getStringExtra("name");
+        if (nm.contains(" ")) {
+            nm = nm.replace(" ", "%20");
+        }
+        final String namePro = nm;
         final int price = pro.getIntExtra("price", 0);
         final String cata = pro.getStringExtra("cata");
         final int proid = pro.getIntExtra("proid", 0);
+        final String img = pro.getStringExtra("img");
+        type = Integer.parseInt(pro.getStringExtra("type"));
+        switch (type) {
+            case 10:
+                setHotType(true);
+                break;
+            case 20:
+                setColdType(true);
+                break;
+            case 30:
+                setFrappeType(true);
+                break;
+        }
+
+        nameTv.setText(namePro.replace("%20", " "));
+        priceTv.setText(String.valueOf(price));
+        imageProduct = new ArrayList<Integer>();
+        imageProduct.add(getResources().getIdentifier(img, "drawable", getPackageName()));
+
+
+        // Query get Price for others type
+
+        String uri = String.format("http://10.0.2.2/coffee/public/menu/type?name=%1$s", namePro);
+
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET,
+                uri,
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        Toast.makeText(getApplicationContext(), "Load... ", 1000).show();
+
+                        try {
+
+
+                            boolean suc = response.getBoolean("success");
+                            if (suc) {
+                                JSONArray jsonArray = response.getJSONArray("data");
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject obj = jsonArray.getJSONObject(i);
+                                    int pr = obj.getInt("BV_UnitPrice");
+                                    String type = obj.getString("BV_Type");
+                                    if (type.matches("10")) {
+                                        priceHot = pr;
+                                    }
+                                    if (type.matches("20")) {
+                                        priceCold = pr;
+                                    }
+                                    if (type.matches("30")) {
+                                        priceFrappe = pr;
+                                    }
+                                }
+
+                                if (priceCold == 0) {
+                                    coldType.setClickable(false);
+                                    coldType.setTextColor(Color.WHITE);
+                                    coldType.setBackgroundColor(Color.GRAY);
+                                }
+                                if (priceHot == 0) {
+                                    hotType.setClickable(false);
+                                    hotType.setTextColor(Color.WHITE);
+                                    hotType.setBackgroundColor(Color.GRAY);
+                                }
+                                if (priceFrappe == 0) {
+                                    frappeType.setClickable(false);
+                                    frappeType.setTextColor(Color.WHITE);
+                                    frappeType.setBackgroundColor(Color.GRAY);
+                                }
+
+
+                            }
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getApplicationContext(), error.toString(), 3000).show();
+
+                    }
+                });
+
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(req);
+
 
         addCartBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                HashMap<String, String> item = new HashMap<String, String>();
+                item.put("id", String.valueOf(proid));
+                item.put("name", namePro);
+                item.put("type", String.valueOf(type));
+                item.put("admix", String.valueOf(admix));
+                item.put("price", priceTv.getText().toString());
+                item.put("quantity", String.valueOf(quantity));
+                item.put("img", img);
 
-                ShoppingItem.addCart(proid);
+
+                ShoppingItem.addCart(item);
 
 
                 AlertDialog.Builder alertB = new AlertDialog.Builder(ProductFullActivity.this);
@@ -205,36 +385,8 @@ public class ProductFullActivity extends Activity {
             }
         });
 
-        nameTv.setText(namePro);
-        priceTv.setText(price + "");
 
 
-
-
-
-
-
-
-        ExternalDbOpenHelper dbOpenHelper = new ExternalDbOpenHelper(this, DB_NAME);
-        database = dbOpenHelper.openDataBase();
-
-
-        //Get image shirth product
-        imageProduct = new ArrayList<Integer>();
-        Cursor stuCursor = database.query(IMAGE_TABLE, new String[]{IMAGE_ID, IMAGE_NAME, PRODUCT_ID},
-                PRODUCT_ID + "=" + "\"" + proid + "\"", null, null, null, IMAGE_ID);
-
-        stuCursor.moveToFirst();
-        imageCart = stuCursor.getString(1);
-        if (!stuCursor.isAfterLast()) {
-            do {
-                //Get content
-                String imgname = stuCursor.getString(1);
-                imageProduct.add(getResources().getIdentifier(imgname, "drawable", getPackageName()));
-
-            } while (stuCursor.moveToNext());
-        }
-        stuCursor.close();
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.image_pager);
         ImagePagerAdapter mAdapter = new ImagePagerAdapter();
@@ -242,17 +394,76 @@ public class ProductFullActivity extends Activity {
 
     }
 
-    private void setPrice(int pr) {
-        priceTv.setText(String.valueOf(pr));
+    private void updatePrice() {
+        int totalPrice;
+        int priceType = 0;
+        int priceAdmix = 0;
+
+        switch (type) {
+            case 1:
+                priceType = priceCold;
+                break;
+            case 2:
+                priceType = priceHot;
+                break;
+            case 3:
+                priceType = priceFrappe;
+        }
+
+        switch (admix) {
+            case 0 :
+                priceAdmix = 0;
+                break;
+            case 2:
+                priceAdmix = wipPrice;
+                break;
+            case 3:
+                priceAdmix = caramelPrice;
+                break;
+            case 4:
+                priceAdmix = syrupPrice;
+        }
+
+        totalPrice = priceType * quantity + priceAdmix;
+
+        priceTv.setText(String.valueOf(totalPrice));
+
     }
+
+//    private String addMixPrice(int pr) {
+//        int price = pr;
+//
+//        if (wipChk.isChecked()) {
+//            price += wipPrice;
+//        }
+//
+//        if (caramelChk.isChecked()) {
+//            price += caramelPrice;
+//        }
+//
+//        if (syrupChk.isChecked()) {
+//            price += syrupPrice;
+//        }
+//
+//        return String.valueOf(price);
+//
+//    }
+//
+//    private void setPrice(int pr) {
+//        priceTv.setText(String.valueOf(pr));
+//    }
 
     private void setColdType(boolean t) {
         if (t) {
             coldType.setTextColor(Color.WHITE);
             coldType.setBackgroundColor(Color.BLACK);
             type = 1;
-            setHotType(false);
-            setFrappeType(false);
+            if (priceHot!=0) {
+                setHotType(false);
+            }
+            if (priceFrappe!=0) {
+                setFrappeType(false);
+            }
         } else {
             coldType.setTextColor(Color.BLACK);
             coldType.setBackgroundColor(Color.WHITE);
@@ -266,8 +477,12 @@ public class ProductFullActivity extends Activity {
             hotType.setTextColor(Color.WHITE);
             hotType.setBackgroundColor(Color.BLACK);
             type = 2;
-            setColdType(false);
-            setFrappeType(false);
+            if (priceCold!=0) {
+                setColdType(false);
+            }
+            if (priceFrappe!=0) {
+                setFrappeType(false);
+            }
         } else {
             hotType.setTextColor(Color.BLACK);
             hotType.setBackgroundColor(Color.WHITE);
@@ -281,8 +496,12 @@ public class ProductFullActivity extends Activity {
             frappeType.setTextColor(Color.WHITE);
             frappeType.setBackgroundColor(Color.BLACK);
             type = 3;
-            setColdType(false);
-            setHotType(false);
+            if (priceCold!=0) {
+                setColdType(false);
+            }
+            if (priceHot!=0) {
+                setHotType(false);
+            }
         } else {
             frappeType.setTextColor(Color.BLACK);
             frappeType.setBackgroundColor(Color.WHITE);
@@ -291,17 +510,17 @@ public class ProductFullActivity extends Activity {
 
     }
 
-    private void changeSize() {
-
-        for (int i = 0; i < sizeBox.length; i++) {
-            if (i == boxNum) {
-                sizeBox[i].setBackgroundResource(R.drawable.sizebox);
-            } else {
-                sizeBox[i].setBackgroundResource(R.drawable.sizebox_unselected);
-            }
-        }
-
-    }
+//    private void changeSize() {
+//
+//        for (int i = 0; i < sizeBox.length; i++) {
+//            if (i == boxNum) {
+//                sizeBox[i].setBackgroundResource(R.drawable.sizebox);
+//            } else {
+//                sizeBox[i].setBackgroundResource(R.drawable.sizebox_unselected);
+//            }
+//        }
+//
+//    }
 
 
     private class ImagePagerAdapter extends PagerAdapter {

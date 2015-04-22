@@ -22,7 +22,7 @@ public class MenuOrder extends Activity {
     TeaFragment teaFragment;
     OtherFragment otherFragment;
 
-    private static final String[] titles = { "COLD", "HOT", "FRAPPE"};
+    private static final String[] titles = { "COFFEE", "TEA", "CHOCOLATE"};
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

@@ -6,16 +6,26 @@ import android.app.AlertDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.techprox.ClothStock.adapter.CartAdapter;
 import com.techprox.ClothStock.model.CartItem;
 import com.techprox.ClothStock.model.ProductItem;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.*;
 
@@ -26,32 +36,30 @@ public class ShoppingCartActivity extends Activity{
 
     private Context mContext;
     ListView cartListView;
-    ArrayList<Integer> item;
-    HashMap<Integer, Integer> amountItem;
+    ArrayList<HashMap<String, String>> item;
+//    HashMap<Integer, Integer> amountItem;
 
     TextView pickupTime;
     Button selectTime;
 
-    private SQLiteDatabase database;
-    private static final String DB_NAME = "clothstock2";
-
-    private static final String PRODUCT_TABLE = "product";
-    private static final String IMAGE_TABLE = "image";
-    private static final String PRODUCT_ID = "proid";
-    private static final String PRODUCT_NAME = "name";
-    private static final String PRODUCT_PRICE = "price";
-    private static final String CATAGORY = "catagory";
-    private static final String IMAGE_ID = "imgid";
-    private static final String IMAGE_NAME = "imgname";
+    SharedPreferences prefs;
 
     int totalprice = 0;
     int[] deliveryTime;
+    private Button checkout;
+
+    String name = "";
+
+    int sentRequest = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.shoppingcartview);
         mContext = getApplicationContext();
+
+        prefs = mContext.getSharedPreferences("com.techprox.ClothStock", Context.MODE_PRIVATE);
+        name = prefs.getString("name", "");
 
         Calendar mcurrentTime = Calendar.getInstance();
         int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
@@ -67,11 +75,12 @@ public class ShoppingCartActivity extends Activity{
         final CartAdapter adapter = new CartAdapter(mContext);
 
         cartListView = (ListView) findViewById(R.id.list);
-        TextView total = (TextView) findViewById(R.id.totalprice);
+        final TextView total = (TextView) findViewById(R.id.totalprice);
         selectTime = (Button) findViewById(R.id.selecttime);
         pickupTime = (TextView) findViewById(R.id.pickuptime);
 
-        pickupTime.setText(deliveryTime[0] + ":" + deliveryTime[1]);
+
+        pickupTime.setText(String.format("%d:%d", deliveryTime[0], deliveryTime[1]));
 
         selectTime.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,76 +109,44 @@ public class ShoppingCartActivity extends Activity{
         });
 
 
-        //Copy database to package
-        //Our key helper
-        ExternalDbOpenHelper dbOpenHelper = new ExternalDbOpenHelper(mContext, DB_NAME);
-        database = dbOpenHelper.openDataBase();
 
-        database.beginTransaction();
-
-        try {
         item = ShoppingItem.getItemList();
-        amountItem = ShoppingItem.getAmount();
+//        amountItem = ShoppingItem.getAmount();
         for (int k = 0; k < item.size(); k++) {
-            int id = item.get(k);
-
-
-            //Get shirth product
-            Cursor stuCursor = database.query(PRODUCT_TABLE, new String[] {PRODUCT_ID,
-                    PRODUCT_NAME, PRODUCT_PRICE, CATAGORY}, PRODUCT_ID + "=" + "\""+id+"\"", null, null, null, PRODUCT_ID);
-
-            stuCursor.moveToFirst();
 
 
 
             //Get content
             String name;
+            int id = Integer.parseInt(item.get(k).get("id"));
             int price;
             int amount;
-            name = stuCursor.getString(1);
-            price = stuCursor.getInt(2);
-            amount = amountItem.get(id);
+            name = item.get(k).get("name");
+            price = Integer.parseInt(item.get(k).get("price"));
+            amount = Integer.parseInt(item.get(k).get("quantity"));
 
-            totalprice += price*amount;
-
-
-            stuCursor.close();
-
-
-            Cursor imgCursor = database.query(IMAGE_TABLE, new String[]{IMAGE_ID, IMAGE_NAME, PRODUCT_ID},
-                    PRODUCT_ID + "=" + "\"" + id + "\"", null, null, null, IMAGE_ID);
-
-            imgCursor.moveToFirst();
-
-            String imgname = imgCursor.getString(1);
+//            totalprice += price;
 
 
 
-            imgCursor.close();
+            String imgname = item.get(k).get("img");
+            int mix = Integer.parseInt(item.get(k).get("admix"));
 
-
-            adapter.add(new CartItem(imgname, name, price, amount));
+            adapter.add(new CartItem(imgname, name, price, amount, mix));
 
         }
 
-        database.setTransactionSuccessful();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            database.endTransaction();
-        }
-
-        database.endTransaction();
+        totalprice = ShoppingItem.getTotal();
 
         cartListView.setAdapter(adapter);
-        total.setText("$"+totalprice);
+        total.setText("฿" + totalprice);
 
         cartListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
 
                 AlertDialog.Builder alertB = new AlertDialog.Builder(ShoppingCartActivity.this);
-                alertB  .setTitle("Delete")
+                alertB.setTitle("Delete")
                         .setMessage("Delete this item from cart?")
                         .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                             @Override
@@ -180,6 +157,10 @@ public class ShoppingCartActivity extends Activity{
                                 cartListView.setAdapter(adapter);
 
                                 ShoppingItem.deleteitem(position);
+
+                                totalprice = ShoppingItem.getTotal();
+                                total.setText("฿" + totalprice);
+
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -196,6 +177,163 @@ public class ShoppingCartActivity extends Activity{
                 return false;
             }
         });
+
+        checkout = (Button) findViewById(R.id.sendOrder);
+        checkout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                AlertDialog alert = new AlertDialog.Builder(ShoppingCartActivity.this)
+                        .setTitle("Sent your order")
+                        .setMessage("Are you sure to sent your order?")
+                        .setIcon(android.R.drawable.ic_dialog_info)
+                        .setPositiveButton("Order", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                processSentOrder();
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        }).show();
+
+
+
+
+            }
+        });
+
+
+    }
+
+    private void processSentOrder() {
+        // volley send order
+        int totalUnit = ShoppingItem.getTotalUnit();
+        String pickT =  pickupTime.getText().toString();
+        String uri = String.format("http://10.0.2.2/coffee/public/order/send?user=%1$s&ttprice=%2$s&ttunit=%3$s&time=%4$s", name, totalprice, totalUnit, pickT);
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET,
+                uri,
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+
+                        try {
+
+
+                            boolean suc = response.getBoolean("success");
+                            if (suc) {
+                                processSendItem();
+
+                            }
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(getApplicationContext(), e.toString(), 3000).show();
+
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getApplicationContext(), error.toString(), 3000).show();
+
+                    }
+                });
+
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(req);
+
+
+
+
+
+
+
+    }
+
+    private void processSendItem() {
+
+
+        // volley create orderItem from ShoppingItem
+        for (int i = 0; i < item.size(); i++) {
+
+            HashMap<String, String> obj = item.get(i);
+            int unit = Integer.parseInt(obj.get("quantity"));
+            int price = Integer.parseInt(obj.get("price"));
+            int admix = Integer.parseInt(obj.get("admix"));
+            int bvid = Integer.parseInt(obj.get("id"));
+
+
+            String urii = String.format("http://10.0.2.2/coffee/public/order/store?unit=%1$s&price=%2$s&admix=%3$s&bvid=%4$s&name=%5$s", unit, price, admix, bvid, name);
+            JsonObjectRequest reqOrder = new JsonObjectRequest(Request.Method.GET,
+                    urii,
+                    null,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+
+                            Toast.makeText(getApplicationContext(), response.toString(), Toast.LENGTH_LONG).show();
+
+
+
+                            try {
+
+
+                                boolean suc = response.getBoolean("success");
+                                if (suc) {
+                                    String id = response.getString("id");
+                                    alertFinish(item.size(), id);
+                                }
+
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                Log.i("error", e.toString());
+
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(getApplicationContext(), error.toString() + "EKIZAI", Toast.LENGTH_LONG).show();
+
+                        }
+                    });
+
+            VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(reqOrder);
+        }
+
+
+
+
+    }
+
+    private void alertFinish(int size, String id) {
+        sentRequest += 1;
+        if (sentRequest == size) {
+//            AlertDialog alert = new AlertDialog.Builder(this)
+//                    .setTitle("Order send")
+//                    .setMessage("Your order send already")
+//                    .setIcon(android.R.drawable.ic_dialog_info)
+//                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            dialog.dismiss();
+//                            sentRequest = 0;
+//                        }
+//                    }).show();
+            Intent i = new Intent(this, TrackOrderActivity.class);
+            i.putExtra("id", id);
+            startActivity(i);
+
+        }
 
     }
 
